@@ -521,12 +521,26 @@ def tiles(west, south, east, north, zooms, truncate=False):
     if truncate:
         west, south = truncate_lnglat(west, south)
         east, north = truncate_lnglat(east, north)
-    if west > east:
-        bbox_west = (-180.0, south, east, north)
-        bbox_east = (west, south, 180.0, north)
-        bboxes = [bbox_west, bbox_east]
-    else:
-        bboxes = [(west, south, east, north)]
+
+    # Create our bbox.
+    bboxes = [(west, south, east, north)]
+    # If the bbox straddles a pole (north-south), split it in half.
+    new_bboxes = []
+    for w, s, e, n in bboxes:
+        if s > n:
+            new_bboxes += [(w, s, e, 90.0), (w, -90.0, e, n)]
+        else:
+            new_bboxes += [(w,s,e,n)]
+    bboxes = new_bboxes
+
+    # If the bboxes straddle the antimeridian (east-west), split them in half.
+    new_bboxes = []
+    for w, s, e, n in bboxes:
+        if w > e:
+            new_bboxes += [(-180.0, s, e, n), (w, s, 180.0, n)]
+        else:
+            new_bboxes += [(w,s,e,n)]
+    bboxes = new_bboxes
 
     for w, s, e, n in bboxes:
         # Clamp bounding values.
