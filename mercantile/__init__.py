@@ -497,7 +497,10 @@ def quadkey_to_tile(qk):
 
 
 def tiles(west, south, east, north, zooms, truncate=False):
-    """Get the tiles overlapped by a geographic bounding box
+    """Get the tiles overlapped by a geographic bounding box.
+
+    NOTE: Web Mercator tiles cannot latitudes beyond ±85.051129.  
+    This region is not represented in the returned tile set even if you request it.
 
     Parameters
     ----------
