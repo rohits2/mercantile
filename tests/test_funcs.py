@@ -121,6 +121,11 @@ def test_tiles():
     ]
     assert sorted(tiles) == sorted(expect)
 
+def test_tiles_many():
+    bounds = (-123.5318, 38.8169, -122.1547, 37.3048)
+    tiles = list(mercantile.tiles(*bounds, zooms=[14]))
+    assert tiles
+
 
 def test_tiles_single_zoom():
     bounds = (-105, 39.99, -104.99, 40)
